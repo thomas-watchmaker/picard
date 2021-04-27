@@ -73,8 +73,8 @@ public class CreateExtendedIlluminaManifest extends CommandLineProgram {
 
     @Argument(shortName = "FD", doc = "Flag duplicates in the extended manifest.  " +
             "If this is set and there are multiple passing assays at the same site (same locus and alleles) " +
-            "then all but one will be marked with the 'DUP' flag in the extended manifest. " +
-            "The one that is not marked as 'DUP' will be the one with the highest Gentrain score as read from the cluster file.", optional = true)
+            "then all but one will be marked with the 'DUPE' flag in the extended manifest. " +
+            "The one that is not marked as 'DUPE' will be the one with the highest Gentrain score as read from the cluster file.", optional = true)
     public Boolean FLAG_DUPLICATES = true;
 
     @Argument(shortName = "CF", doc = "The Standard (Hapmap-trained) cluster file (.egt) from Illumina. " +
@@ -197,7 +197,7 @@ public class CreateExtendedIlluminaManifest extends CommandLineProgram {
                 indelLocusToRsId = generateLocusToRsidMap(DBSNP_FILE, manifestIndelIntervals);
             }
 
-            List<Integer> dupeIndices = null;
+            Set<Integer> dupeIndices = null;
             if (FLAG_DUPLICATES) {
                 dupeIndices = flagDuplicates(records);
             }
@@ -283,7 +283,30 @@ public class CreateExtendedIlluminaManifest extends CommandLineProgram {
      *
      * @param records A list of records to search through and flag for duplicates.
      */
-    private List<Integer> flagDuplicates(List<Build37ExtendedIlluminaManifestRecord> records) {
+    private Set<Integer> flagDuplicates(final List<Build37ExtendedIlluminaManifestRecord> records) {
+        // Load the cluster file to get the GenTrain scores
+        // load the egt first, and create a map of ilmnid to gentrain score.  Save that and use it for deduplicating.
+        log.info("Loading the egt file for duplicate resolution");
+        final InfiniumEGTFile infiniumEGTFile;
+        try {
+            infiniumEGTFile = new InfiniumEGTFile(CLUSTER_FILE);
+        } catch (IOException e) {
+            throw new PicardException("Error reading cluster file '" + CLUSTER_FILE.getAbsolutePath() + "'", e);
+        }
+        final Map<String, Float> nameToGenTrainScore = new HashMap<>();
+        for (String rsName : infiniumEGTFile.rsNameToIndex.keySet()) {
+            nameToGenTrainScore.put(rsName, infiniumEGTFile.totalScore[infiniumEGTFile.rsNameToIndex.get(rsName)]);
+        }
+
+        return flagDuplicates(records, nameToGenTrainScore);
+    }
+
+    /**
+     * This method goes through a list of records and if it finds duplicates, it flags the non-best
+     * with the duplicate flag.
+     *
+     */
+    Set<Integer> flagDuplicates(final List<Build37ExtendedIlluminaManifestRecord> records, final Map<String, Float> nameToGenTrainScore) {
         Map<String, List<Build37ExtendedIlluminaManifestRecord>> coordinateMap = new HashMap<>();
         for (Build37ExtendedIlluminaManifestRecord record : records) {
 
@@ -312,27 +335,17 @@ public class CreateExtendedIlluminaManifest extends CommandLineProgram {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         coordinateMap.clear();
 
-        // Load the cluster file to get the GenTrain scores
-        // load the egt first, and create a map of ilmnid to gentrain score.  Save that and use it for deduplicating.
-        log.info("Loading the egt file");
-        final InfiniumEGTFile infiniumEGTFile;
-        try {
-            infiniumEGTFile = new InfiniumEGTFile(CLUSTER_FILE);
-        } catch (IOException e) {
-            throw new PicardException("Error reading cluster file '" + CLUSTER_FILE.getAbsolutePath() + "'", e);
-        }
-
         // evaluate each coordinate assay and remove the assay with the best GenTrain score (all remaining are dupes)
         dupeMap.entrySet().forEach(entry ->
                 entry.getValue().remove(entry.getValue().stream().max(Comparator.comparingDouble(assay ->
-                        infiniumEGTFile.totalScore[infiniumEGTFile.rsNameToIndex.get(assay.getName())])).get()));
+                        nameToGenTrainScore.get(assay.getName()))).get()));
 
         // we really only need the list of indices for the dupes
-        List<Integer> dupeIndices = dupeMap.entrySet().stream()
+        Set<Integer> dupeIndices = dupeMap.entrySet().stream()
                 .flatMapToInt(entry ->
                         entry.getValue().stream()
                                 .mapToInt(IlluminaManifestRecord::getIndex))
-                .boxed().collect(Collectors.toList());
+                .boxed().collect(Collectors.toSet());
 
         return dupeIndices;
     }
