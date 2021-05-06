@@ -49,13 +49,13 @@ public class CreateExtendedIlluminaManifest extends CommandLineProgram {
                     "As part of generating this extended version of the manifest, the tool may mark loci as 'FAIL' if they do not pass validation. " +
                     "<h4>Usage example:</h4>" +
                     "<pre>" +
-                    "java -jar picard.jar GtcToVcf \\<br />" +
+                    "java -jar picard.jar CreateExtendedIlluminaManifest \\<br />" +
                     "      --INPUT illumina_chip_manifest.csv \\<br />" +
-                    "      --CF illumina_chip_manifest.egt \\<br />" +
-                    "      --TB 37 \\<br />" +
-                    "      --TR reference.fasta \\<br />" +
                     "      --OUTPUT illumina_chip_manifest.extended.csv \\<br />" +
-                    "      --RF illumina_chip_manifest.report.txt \\<br />" +
+                    "      --REPORT_FILE illumina_chip_manifest.report.txt \\<br />" +
+                    "      --CLUSTER_FILE illumina_chip_manifest.egt \\<br />" +
+                    "      --REFERENCE_SEQUENCE reference.fasta \\<br />" +
+                    "      --TB 37 \\<br />" +
                     "</pre>";
 
     @Argument(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "This is the text version of the Illumina .bpm file")
@@ -108,7 +108,7 @@ public class CreateExtendedIlluminaManifest extends CommandLineProgram {
 
     private static final Log log = Log.getInstance(CreateExtendedIlluminaManifest.class);
 
-    public static final String VERSION = "1.6";
+    private static final String VERSION = "2.0";
 
     @Override
     protected ReferenceArgumentCollection makeReferenceArgumentCollection() {
@@ -351,8 +351,7 @@ public class CreateExtendedIlluminaManifest extends CommandLineProgram {
     }
 
     private void writeBadAssaysFile(File badAssaysFile, List<Build37ExtendedIlluminaManifestRecord> badRecords) throws IOException {
-        BufferedWriter badAssaysFileWriter;
-        badAssaysFileWriter = new BufferedWriter(new FileWriter(badAssaysFile, false));
+        BufferedWriter badAssaysFileWriter = new BufferedWriter(new FileWriter(badAssaysFile, false));
         badAssaysFileWriter.write("## The following assays were marked by CreateExtendedIlluminaManifest as Unparseable (input file: " + INPUT.getAbsolutePath() + ")");
         badAssaysFileWriter.newLine();
         badAssaysFileWriter.write("#IlmnId,Name,GenomeBuild,Chr,MapInfo,FailureFlag");
