@@ -14,7 +14,7 @@ public class CreateExtendedIlluminaManifestTest {
 
     @Test
     public void testFlagDuplicates() throws IOException {
-        final File extendedManifestFile = TEST_DATA_DIR.resolve("GDA-8v1-0_A5.1.6.extended.csv").toFile();
+        final File extendedManifestFile = TEST_DATA_DIR.resolve("GDA-8v1-0_A5.2.0.extended.csv").toFile();
         Build37ExtendedIlluminaManifest extendedManifest = new Build37ExtendedIlluminaManifest(extendedManifestFile);
         final List<Build37ExtendedIlluminaManifestRecord> records = new ArrayList<>();
 
