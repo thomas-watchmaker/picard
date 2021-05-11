@@ -12,7 +12,7 @@ import java.util.Iterator;
 public class IlluminaManifestTest {
     private static final File TEST_DATA_DIR = new File("testdata/picard/arrays/illumina");
     private static final File TEST_ILLUMINA_MANIFEST_FILE = new File(TEST_DATA_DIR, "HumanExome-12v1-1_A.csv");
-    private static final File TEST_BAD_ILLUMINA_MANIFEST_FILE = new File(TEST_DATA_DIR, "HumanExome-12v1-1_A.extended.csv");
+    private static final File TEST_BAD_ILLUMINA_MANIFEST_FILE = new File(TEST_DATA_DIR, "HumanExome-12v1-1_A.1.3.extended.csv");
 
     @Test
     public void tesIlluminaManifest() throws IOException {
