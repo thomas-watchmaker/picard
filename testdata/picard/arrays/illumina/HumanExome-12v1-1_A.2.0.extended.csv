@@ -3,7 +3,7 @@ Illumina, Inc.
 Descriptor File Name,HumanExome-12v1-1_A.bpm
 Assay Format,Infinium HD Ultra
 Date Manufactured,4/23/2012
-CreateExtendedIlluminaManifest.version,1.6
+CreateExtendedIlluminaManifest.version,2.0
 Target Build,37
 Target Reference File,/cromwell_root/gcp-public-data--broad-references/hg19/v0/Homo_sapiens_assembly19.fasta
 Cluster File,/cromwell_root/gcp-public-data--broad-references/arrays/HumanExome-12v1-1_A/HumanExomev1_1_CEPH_A.egt

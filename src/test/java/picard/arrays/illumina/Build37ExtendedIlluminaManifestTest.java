@@ -13,12 +13,15 @@ import java.util.Iterator;
 public class Build37ExtendedIlluminaManifestTest {
 
     private static final File TEST_DATA_DIR = new File("testdata/picard/arrays/illumina");
+    private static final String TEST_EXOME_EXT_MANIFEST_FILENAME = "HumanExome-12v1-1_A.2.0.extended.csv";
 
     @DataProvider(name = "testBuild37ExtendedIlluminaManifestDataProvider")
     public Object[][] testBuild37ExtendedIlluminaManifestDataProvider() {
         return new Object[][]{
-                { "HumanExome-12v1-1_A.1.6.extended.csv", "HumanExome-12v1-1_A.bpm", "4/23/2012", "Infinium HD Ultra", 8, "1.6", 7 }
-//                { "MEG_AllofUs_20002558X351448_A2.1.4.extended.csv", "MEG_AllofUs_20002558X351448_A2.bpm", "2/13/2019", "Infinium LCG", 5, "1.4", 1 }
+                { TEST_EXOME_EXT_MANIFEST_FILENAME, "HumanExome-12v1-1_A.bpm", "4/23/2012", "Infinium HD Ultra", 8, "2.0", 7 },
+                { "HumanExome-12v1-1_A.1.3.extended.csv", "HumanExome-12v1-1_A.bpm", "4/23/2012", "Infinium HD Ultra", 4, "1.3", 4 },
+                { "MEG_AllofUs_20002558X351448_A2.1.4.extended.csv", "MEG_AllofUs_20002558X351448_A2.bpm", "2/13/2019", "Infinium LCG", 5, "1.4", 1 },
+                { "GDA-8v1-0_A5.2.0.extended.csv", "GDA-8v1-0_A5.bpm", "8/28/2020", "Infinium LCG", 6, "2.0", 6 }
         };
     }
 
@@ -33,6 +36,32 @@ public class Build37ExtendedIlluminaManifestTest {
         Assert.assertEquals(manifest.getAssayFormat(), expectedAssayFormat);
         Assert.assertEquals(manifest.getLociCount(), expectedLociCount);
         Assert.assertEquals(manifest.getExtendedManifestVersion(), expectedExtendedManifestVersion);
+
+        final Iterator<Build37ExtendedIlluminaManifestRecord> iterator = manifest.extendedIterator();
+        int count = 0;
+        int goodCount = 0;
+        while (iterator.hasNext()) {
+            count++;
+            final Build37ExtendedIlluminaManifestRecord record = iterator.next();
+            Assert.assertNotNull(record.getName());
+            Assert.assertNotNull(record.getIlmnId());
+            Assert.assertNotNull(record.getSnp());
+            if (!record.isFail()) {
+                Assert.assertNotNull(record.getB37Chr());
+                Assert.assertNotNull(record.getB37Pos());
+                Assert.assertNotNull(record.getAlleleA());
+                Assert.assertNotNull(record.getAlleleB());
+                Assert.assertNotNull(record.getRefAllele());
+                goodCount++;
+            }
+        }
+        Assert.assertEquals(count, expectedLociCount);
+        Assert.assertEquals(goodCount, expectedNumPass);
+    }
+
+    @Test
+    public void testBuild37ExtendedIlluminaManifestContent() throws IOException {
+        final Build37ExtendedIlluminaManifest manifest = new Build37ExtendedIlluminaManifest(new File(TEST_DATA_DIR, TEST_EXOME_EXT_MANIFEST_FILENAME));
 
         final Iterator<Build37ExtendedIlluminaManifestRecord> iterator = manifest.extendedIterator();
         int count = 0;
@@ -91,7 +120,7 @@ public class Build37ExtendedIlluminaManifestTest {
                 Assert.assertFalse(record.isDupe());
             }
         }
-        Assert.assertEquals(count, expectedLociCount);
-        Assert.assertEquals(goodCount, expectedNumPass);
+        Assert.assertEquals(count, 8);
+        Assert.assertEquals(goodCount, 7);
     }
 }

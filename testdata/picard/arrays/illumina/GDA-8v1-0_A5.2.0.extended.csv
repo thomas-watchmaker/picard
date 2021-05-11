@@ -3,11 +3,11 @@ Illumina, Inc.
 Descriptor File Name,GDA-8v1-0_A5.bpm
 Assay Format,Infinium LCG
 Date Manufactured,8/28/2020
-CreateExtendedIlluminaManifest.version,1.6
+CreateExtendedIlluminaManifest.version,2.0
 Target Build,37
 Target Reference File,/seq/references/Homo_sapiens_assembly19/v1/Homo_sapiens_assembly19.fasta
 Cluster File,/seq/tng/ggrant/GenotypingArrays/FromProdCloud/GDA-8v1-0_A5/GDA-8v1-0_A1_ClusterFile.egt
-Loci Count ,1914935
+Loci Count ,6
 [Assay],
 IlmnID,Name,IlmnStrand,SNP,AddressA_ID,AlleleA_ProbeSeq,AddressB_ID,AlleleB_ProbeSeq,GenomeBuild,Chr,MapInfo,Ploidy,Species,Source,SourceVersion,SourceStrand,SourceSeq,TopGenomicSeq,BeadSetID,Exp_Clusters,RefStrand,Intensity_Only,build37Chr,build37Pos,build37RefAllele,build37AlleleA,build37AlleleB,build37Rsid,build37Flag
 1:10001102-G-T-0_T_R_2315665129,1:10001102-G-T,TOP,[A/C],0020685825,GACACTTGAACTAGACTTTGAAGAATGAACTGGGCTTCATAGGTAGAAAA,,,37,1,10001102,diploid,Homo sapiens,PAGE,0,BOT,accacactggatgacttgctgttccaaaaatgtcatgcacttttttgagcctgcatttt[T/G]ttttctacctatgaagcccagttcattcttcaaagtctagttcaagtgtcaccttctct,agagaaggtgacacttgaactagactttgaagaatgaactgggcttcataggtagaaaa[A/C]aaaatgcaggctcaaaaaagtgcatgacatttttggaacagcaagtcatccagtgtggt,1165,3,-,0,1,10001102,T,T,G,,PASS
