@@ -34,7 +34,6 @@ public class Build37ExtendedIlluminaManifestRecordCreator {
 
     private final Log log = Log.getInstance(Build37ExtendedIlluminaManifestRecordCreator.class);
 
-    public static final String BUILD_36 = "36";
     public static final String BUILD_37 = "37";
 
     // These are the IUPAC nucleotide codes as described here: https://www.bioinformatics.org/sms/iupac.html
@@ -78,7 +77,8 @@ public class Build37ExtendedIlluminaManifestRecordCreator {
                 "");
 
         // Look for entries which Illumina has marked as invalid
-        if (illuminaManifestRecord.getChr().equals(IlluminaManifestRecord.ILLUMINA_FLAGGED_BAD_CHR)) {
+        if ((illuminaManifestRecord.getChr().equals(IlluminaManifestRecord.ILLUMINA_FLAGGED_BAD_CHR)) ||
+            (illuminaManifestRecord.getPosition() == 0)) {
             newRecord.flag = Build37ExtendedIlluminaManifestRecord.Flag.ILLUMINA_FLAGGED;
             return newRecord;
         }

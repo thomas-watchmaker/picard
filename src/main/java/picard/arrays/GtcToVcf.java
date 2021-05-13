@@ -300,7 +300,7 @@ public class GtcToVcf extends CommandLineProgram {
         }
 
         log.info(numVariantsWritten + " Variants were written to file");
-        log.info(gtcFile.getNumberOfSnps() + " SNPs in the GTC file");
+        log.info(gtcFile.getNumberOfSnps() + " Variants in the GTC file");
         log.info(manifest.getNumAssays() + " Variants on the " + manifest.getDescriptorFileName() + " genotyping array manifest file");
     }
 
